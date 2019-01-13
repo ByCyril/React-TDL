@@ -1,41 +1,47 @@
 import React, { Component } from "react";
-// import "./FirebaseModule";
 import "./App.css";
 import Note from "./Note/Note";
 import NoteForm from "./NoteForm/NoteForm";
+import Firebase from "./config/Config";
+
 class App extends Component {
   constructor(props) {
     super(props);
+
+    // this.db = this.app
+    //   .database()
+    //   .ref()
+    //   .child("notes");
+
+    this.db = Firebase.database()
+      .ref()
+      .child("manual")
+      .child("thread");
+
     this.addNote = this.addNote.bind(this);
 
     this.state = {
-      notes: [
-        {
-          noteContent: "First note",
-          noteId: 1
-        },
-        {
-          noteContent: "second note",
-          noteId: 2
-        },
-        {
-          noteContent: "third note",
-          noteId: 3
-        },
-        {
-          noteContent: "fourth note",
-          noteId: 4
-        }
-      ]
+      notes: []
     };
   }
 
-  addNote(note) {
+  componentWillMount() {
     const previousNotes = this.state.notes;
-    previousNotes.push(note);
-    this.setState({
-      notes: previousNotes
+
+    this.db.on("child_added", snap => {
+      previousNotes.push({
+        noteId: snap.key,
+        noteContent: snap.val().note
+      });
+
+      this.setState({
+        notes: previousNotes
+      });
     });
+  }
+
+  addNote(note) {
+    this.db.push().set({ noteContent: note });
   }
 
   render() {

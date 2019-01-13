@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import "./NoteForm.css";
-import { throws } from "assert";
+
 class NoteForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      note: {
-        newNoteContent: "",
-        newNoteId: 0
-      }
+      newNoteContent: ""
     };
 
     this.handleUserInput = this.handleUserInput.bind(this);
@@ -18,17 +15,15 @@ class NoteForm extends Component {
 
   handleUserInput(event) {
     this.setState({
-      newNoteContent: event.target.value,
-      newNoteId: event.target.value.length + 1
+      newNoteContent: event.target.value
     });
   }
 
   writeNote() {
-    this.props.addNote(this.state.note);
+    this.props.addNote(this.state.newNoteContent);
 
     this.setState({
-      newNoteContent: "",
-      newNoteId: 0
+      newNoteContent: ""
     });
   }
 
